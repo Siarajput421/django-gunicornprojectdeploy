@@ -24,7 +24,7 @@ ExecStart=/home/ubuntu/env/bin/gunicorn \
           --access-logfile - \
           --workers 3 \
           --bind unix:/run/gunicorn.sock \
-          first.wsgi:application
+          textutils.wsgi:application
 [Install]
 WantedBy=multi-user.target"  >  /etc/systemd/system/gunicorn.service
 
@@ -35,7 +35,7 @@ sudo systemctl enable gunicorn.socket
 
 echo "server {
     listen 80;
-    server_name 54.95.234.19;
+    server_name 3.89.104.67;
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
         root /home/ubuntu/;
