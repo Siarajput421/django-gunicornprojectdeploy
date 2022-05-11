@@ -17,7 +17,7 @@ After=network.target
 [Service]
 User=ubuntu
 Group=www-data
-WorkingDirectory=/home/ubuntu/projectdir/projectdir
+WorkingDirectory=/home/ubuntu
 ExecStart=/home/ubuntu/env/bin/gunicorn \
           --access-logfile - \
           --workers 3 \
@@ -36,7 +36,7 @@ echo "server {
     server_name anuradha.co.vu;
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
-        root /home/ubuntu/projectdir/projectdir;
+        root /home/ubuntu/;
     }
     location / {
         include proxy_params;
