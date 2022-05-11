@@ -10,6 +10,3 @@ hooks:
   AfterInstall:
     - location: config.sh
       timeout: 300
-  #ApplicationStart:
-   # - location: start.sh
-     # timeout: 200
