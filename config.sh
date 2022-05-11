@@ -2,55 +2,18 @@
   
 #!/bin/bash 
 
-deactivate
+cd /home/ubuntu
 
-echo "[Unit]
-Description=gunicorn socket
-[Socket]
-ListenStream=/run/gunicorn.sock
-[Install]
-WantedBy=sockets.target
-" > /etc/systemd/system/gunicorn.socket
+source env/bin/activate
+sudo fuser -k 8000/tcp
 
-echo " [Unit]
-Description=gunicorn daemon
-Requires=gunicorn.socket
-After=network.target
-[Service]
-User=ubuntu
-Group=www-data
-WorkingDirectory=/home/ubuntu/
-ExecStart=/home/ubuntu/env/bin/gunicorn \
-          --access-logfile - \
-          --workers 3 \
-          --bind unix:/run/gunicorn.sock \
-          textutils.wsgi:application
-[Install]
-WantedBy=multi-user.target"  >  /etc/systemd/system/gunicorn.service
-
-sudo systemctl start gunicorn.socket
-
-sudo systemctl enable gunicorn.socket
+gunicorn --bind 0.0.0.0:8000 first.wsgi &>/dev/null & 
 
 
-echo "server {
-    listen 80;
-    server_name anuradha.co.vu ;
-    location = /favicon.ico { access_log off; log_not_found off; }
-    location /static/ {
-        root /home/ubuntu/;
-    }
-    location / {
-        include proxy_params;
-        proxy_pass http://unix:/run/gunicorn.sock;
-    }
-}" > /etc/nginx/sites-available/first
+mv /home/ubuntu/NGINX /etc/nginx/sites-available 
 
-
-sudo ln -s /etc/nginx/sites-available/first /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/NGINX /etc/nginx/sites-enabled/
 
 sudo rm /etc/nginx//sites-enabled/default
 
-
 sudo systemctl restart nginx
-sudo systemctl restart gunicorn
